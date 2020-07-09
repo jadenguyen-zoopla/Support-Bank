@@ -1,4 +1,7 @@
+using System.IO.IsolatedStorage;
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Support_Bank
 {
@@ -8,11 +11,4 @@ namespace Support_Bank
         public string To;
     }
 
-    public class FileReader 
-    {
-        public List<Transaction> ReadTransactions()
-        {
-            var csv :|Enumberable<string> = File.ReadLines(path: "Transactions2014.csv");
-        }
-    }
 }
