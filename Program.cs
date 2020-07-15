@@ -1,14 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
+
+
 
 namespace Support_Bank
 {
     class Program
     {
+        private static void ConfigureLogger()
+        {
+            var config = new LoggingConfiguration(); // creating new logging configuration
+            var target = new FileTarget { FileName = @"SupportBank.log", Layout = @"${longdate} ${level} - ${logger}: ${message}" }; //place to keep all logs
+            config.AddTarget("File Logger", target); // add target to config object
+
+            var consoleTarget = new ColoredConsoleTarget{Layout = @"${level} - ${logger}: ${message}"};
+            config.AddTarget("Console Logger", consoleTarget);
+
+            config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, target)); // add a new log rule which takes 3 arguments (what things we want to log)
+            config.LoggingRules.Add(new LoggingRule("*", LogLevel.Error, consoleTarget));
+            LogManager.Configuration = config; // this is vital and handles everything
+        }
+
         static void Main(string[] args)
         {
+            ConfigureLogger();
+
             // Read all the transactions from the file.
             var transactions = FileReader.ReadTransactions();
-            
+
             // and then use those transactions to create the accounts we will need.
             var accounts = Bank.GetAccounts(transactions);
 

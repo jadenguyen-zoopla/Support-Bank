@@ -1,13 +1,17 @@
 using System.Transactions;
 using System.Collections.Generic;
+using NLog;
 
 namespace Support_Bank
 {
     public class Bank
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+
         public static List<Account> GetAccounts(List<Transaction> transactions) 
         //Creating individual accounts for each person
         {
+            Logger.Info("Getting unique names");
             // find all of the unique names of people in the team.
             var names = GetUniqueNames(transactions);
 
@@ -17,6 +21,7 @@ namespace Support_Bank
             // loop through all of the names
             foreach (var name in names)
             {
+                Logger.Debug($"creating account for {name}");
                 // and for each name, create the new account
                 var account = new Account(name);
                 

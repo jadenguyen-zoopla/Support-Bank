@@ -2,16 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NLog;
 
 namespace Support_Bank
 {
     public class FileReader
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         public static List<Transaction> ReadTransactions()
         {
+            Logger.Info("About to read the transactions");
+        
+
             // Read all of the lines of text from the file.
             // (gets an array of strings - one string for each line)
-            var linesFromFile = File.ReadAllLines("Transactions2014.csv");
+            var linesFromFile = File.ReadAllLines("DodgyTransactions2015.csv");
             
             // create an empty list of transactions.
             var transactions = new List<Transaction>();
@@ -31,7 +36,20 @@ namespace Support_Bank
                 newTransaction.from = parts[1];
                 newTransaction.to = parts[2];
                 newTransaction.narrative = parts[3];
-                newTransaction.amount = Convert.ToDecimal(parts[4]);
+                
+
+                try
+                {
+                    newTransaction.amount = Convert.ToDecimal(parts[4]);
+                }
+
+                catch(System.FormatException exception)
+                {
+                    Logger.Error($"You entered {parts[4]} which is an invalid format");
+                    continue;
+                }
+        
+
                 
                 // add our newly created transaction to the list of all transactions.
                 transactions.Add(newTransaction);
